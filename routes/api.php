@@ -39,7 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('transmissions')->group(function () {
         Route::get('/', [TransmissionController::class, 'getTransmissions']);
         Route::post('/send', [TransmissionController::class, 'sendTransmission']);
-        Route::post('/{transmission}', [TransmissionController::class, 'listenToTransmission']);
+        Route::post('/listen', [TransmissionController::class, 'listenToTransmission']);
     });
 
 });

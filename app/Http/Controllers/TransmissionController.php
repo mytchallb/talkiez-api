@@ -99,9 +99,9 @@ class TransmissionController extends Controller
             return response()->json(['error' => 'Audio file not found'], 404);
         }
 
-        // Mark as listened
-        $transmission->status = 'listened';
-        $transmission->save();
+        // Mark as listened <- Hide this for testing
+        // $transmission->status = 'listened';
+        // $transmission->save();
 
         // Determine content type based on file extension
         $contentType = str_ends_with($transmission->filename, '.mp3') ? 'audio/mpeg' : 'audio/wav';
