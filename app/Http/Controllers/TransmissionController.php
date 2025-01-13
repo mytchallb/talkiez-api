@@ -100,8 +100,8 @@ class TransmissionController extends Controller
         }
 
         // Mark as listened <- Hide this for testing
-        // $transmission->status = 'listened';
-        // $transmission->save();
+        $transmission->status = 'listened';
+        $transmission->save();
 
         // Determine content type based on file extension
         $contentType = str_ends_with($transmission->filename, '.mp3') ? 'audio/mpeg' : 'audio/wav';

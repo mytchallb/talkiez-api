@@ -24,6 +24,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // -- USER
     Route::prefix('user')->group(function () {
         Route::get('/', [UserController::class, 'getUser']);
+        Route::post('/update', [UserController::class, 'updateUser']);
+        Route::post('/delete', [UserController::class, 'deleteUser']);
     });
     
     // -- FRIENDS
