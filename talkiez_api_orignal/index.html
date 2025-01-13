@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Talkiez Server</title>
+</head>
+<body>
+    <h1>Talkiez Server</h1>
+    <button id="refresh-button">Refresh Audio Files</button>
+    <ul id="audio-files" style="list-style-type: none; padding: 0;">
+        <!-- Audio files will be listed here -->
+    </ul>
+
+    <script>
+      // Replace interval with button click handler
+      document.getElementById('refresh-button').addEventListener('click', async () => {
+        const response = await fetch('/api?action=getAudioFileList')
+        let data = await response.text()
+        console.log(data)
+        data = JSON.parse(data)
+        if (data.success) {
+          updateList(data.files)
+        } else {
+          console.error('Failed to fetch audio files:', data.error)
+        }
+      });
+
+      const updateList = (files) => {
+        const list = document.getElementById('audio-files')
+        list.innerHTML = ''
+        files.forEach(file => {
+          const li = document.createElement('li')
+          const date = new Date(file.created * 1000).toLocaleString()
+          const size = (file.size / 1024).toFixed(2) + ' KB'
+          li.innerHTML = `
+            <div>
+              <audio controls>
+                <source src="audio/${file.name}" type="audio/wav">
+                Your browser does not support the audio element.
+              </audio>
+              <small>(${size} - ${date})</small>
+            </div>
+          `
+          list.appendChild(li)
+        })
+      }
+    </script>
+</body>
+</html>
+
