@@ -20,7 +20,8 @@ class FriendshipController extends Controller
         $user = $request->user();
         
         return response()->json(
-            User::select('users.id', 'users.name', 'users.email', 'friendships.status')
+            User::select('users.name', 'users.email', 'friendships.status')
+                ->selectRaw('friendships.id, friendships.sender_id, friendships.recipient_id')
                 ->join('friendships', function($join) use ($user) {
                     $join->on('users.id', '=', 'friendships.recipient_id')
                         ->where('friendships.sender_id', '=', $user->id)
@@ -28,6 +29,7 @@ class FriendshipController extends Controller
                         ->where('friendships.recipient_id', '=', $user->id);
                 })
                 ->whereIn('friendships.status', ['accepted', 'pending'])
+                ->orderBy('friendships.created_at', 'asc')
                 ->get()
         );
     }
