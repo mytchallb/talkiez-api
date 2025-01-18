@@ -8,23 +8,40 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Propaganistas\LaravelPhone\PhoneNumber;
+
 
 use App\Models\User;
 
 class AuthController extends Controller
 {
 
+    public function alive(Request $request)
+    {
+        return response()->json(['message' => 'Alive']);
+    }
+
     public function register(Request $request)
     {
         try {
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
+                'phone_prefix' => 'required|string|max:5',
+                'phone_combined' => 'required|phone:AUTO,mobile',
                 'email' => 'required|string|email|max:255|unique:users',
                 'password' => 'required|string',
+                'language' => 'nullable|string|max:10',
+            ], [
+                'phone.phone' => 'Please enter a valid mobile phone number.',
+                'phone.required' => 'The phone number field is required.'
             ]);
+
+            // Convert phone number to E164 format
+            $phone = phone($validated['phone_combined'])->formatE164();
 
             $user = User::create([
                 'name' => $validated['name'],
+                'phone' => $phone,
                 'email' => strtolower($validated['email']),
                 'password' => Hash::make($validated['password'])
             ]);

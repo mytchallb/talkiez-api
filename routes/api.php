@@ -11,6 +11,8 @@ use App\Http\Controllers\TransmissionController;
 
 
 // 📢 PUBLIC ROUTES
+Route::post('/alive', [AuthController::class, 'alive']);
+
 // -- AUTH
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
