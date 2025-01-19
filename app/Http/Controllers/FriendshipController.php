@@ -39,7 +39,7 @@ class FriendshipController extends Controller
         $query = User::query();
         
         if (!empty($phone)) {
-            $query->where('phone', $phone);
+            $query->where('phone_combined', $phone);
         }
         
         if (!empty($email)) {
@@ -53,13 +53,13 @@ class FriendshipController extends Controller
     {
         // Validate initial request
         $validated = $request->validate([
-            'phone' => 'required_without:email|string|nullable',
-            'email' => 'required_without:phone|email|nullable',
+            'phone_combined' => 'required_without:email|string|nullable',
+            'email' => 'required_without:phone_combined|email|nullable',
         ]);
 
         // First check if the friend exists
         $friend = $this->checkFriendExists(
-            $validated['phone'] ?? null,
+            $validated['phone_combined'] ?? null,
             $validated['email'] ?? null
         );
 
