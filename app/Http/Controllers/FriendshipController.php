@@ -21,7 +21,14 @@ class FriendshipController extends Controller
         
         return response()->json(
             User::select('users.name', 'users.email', 'friendships.status')
-                ->selectRaw('friendships.id, friendships.sender_id, friendships.recipient_id')
+                ->selectRaw('
+                    friendships.id as request_id,
+                    CASE 
+                        WHEN friendships.sender_id = ? THEN friendships.recipient_id
+                        ELSE friendships.sender_id
+                    END as friend_user_id,
+                    friendships.sender_id = ? as sent_by_me
+                ', [$user->id, $user->id])
                 ->join('friendships', function($join) use ($user) {
                     $join->on('users.id', '=', 'friendships.recipient_id')
                         ->where('friendships.sender_id', '=', $user->id)
@@ -31,6 +38,13 @@ class FriendshipController extends Controller
                 ->whereIn('friendships.status', ['accepted', 'pending'])
                 ->orderBy('friendships.created_at', 'asc')
                 ->get()
+                ->map(function ($friend) use ($user) {
+                    // Ensure friend_user_id is not the current user's ID
+                    if ($friend->friend_user_id == $user->id) {
+                        $friend->friend_user_id = $friend->sent_by_me ? $friend->recipient_id : $friend->sender_id;
+                    }
+                    return $friend;
+                })
         );
     }
 

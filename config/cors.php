@@ -22,7 +22,10 @@ return [
     'allowed_origins' => [
         'https://app.talkiez.dev',
         'http://localhost:5173',
-        'http://talkiez-web.test'
+        'http://talkiez-web.test',
+        'https://talkiez-web.test',
+        'http://localhost:5173',
+        'https://localhost:5173',
     ],
 
     'allowed_origins_patterns' => [],

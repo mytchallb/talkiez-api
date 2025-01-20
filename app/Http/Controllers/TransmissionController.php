@@ -70,6 +70,7 @@ class TransmissionController extends Controller
     {
         $transmissions = Transmissions::with('sender')
             ->where('receiver_id', $request->user()->id)
+            ->where('status', '!=', 'listened')
             ->latest()
             ->get()
             ->map(function ($transmission) {
